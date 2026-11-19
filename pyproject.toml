@@ -3,7 +3,7 @@ name = "pipbo-fomula"
 version = "0.5.0"
 description = "PSPI/PBO synthesis and formulation laboratory records"
 requires-python = ">=3.12"
-dependencies = ["fastapi==0.164.0", "uvicorn==0.54.0", "cryptography==50.0.2", "openpyxl==3.1.5"]
+dependencies = ["fastapi==0.164.0", "uvicorn==0.54.0", "cryptography==50.0.2", "openpyxl==3.1.5", "tzdata>=2025.2"]
 
 [dependency-groups]
 dev = ["httpx>=0.28,<1"]

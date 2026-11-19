@@ -5,3 +5,9 @@ __pycache__/
 data/
 .env
 .DS_Store
+
+.venv-build/
+build/
+dist/
+release/
+*.spec

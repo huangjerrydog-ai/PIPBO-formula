@@ -19,13 +19,14 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
+from runtime_paths import data_directory
 from catalog import seed_rows
 from copolymer import solve_molar
 from process_control import validate_stage
 from engine import RuleError, formulation, material, num, synthesis, balance_feed
 
 ROOT=Path(__file__).resolve().parent
-DATA=Path(os.environ.get('PIPBO_DATA',str(ROOT/'data')))
+DATA=data_directory(ROOT)
 DATA.mkdir(parents=True,exist_ok=True,mode=0o700)
 KEY=DATA/'vault.key'
 if not KEY.exists():
