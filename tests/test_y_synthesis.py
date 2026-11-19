@@ -133,7 +133,7 @@ class SynthesisRoutes(unittest.TestCase):
 
     def test_08_migrate_seeded_names_preserves_existing_identity(self):
         with tempfile.TemporaryDirectory(prefix='pipbo-cn-migration-') as path:
-            env=dict(os.environ,PIPBO_DATA=path,PYTHONDONTWRITEBYTECODE='1')
+            env=dict(os.environ,PIPBO_DATA=path,PYTHONDONTWRITEBYTECODE='1',PYTHONIOENCODING='utf-8')
             init="""import server
 with server.connect(True) as c:
  r=c.execute("SELECT secret FROM materials WHERE code='DA-01'").fetchone()
@@ -142,13 +142,13 @@ with server.connect(True) as c:
  custom={'name':'自定义旧物料','cas':'CUSTOM','supplier':'KEEP-CUSTOM','grade':''}
  c.execute('INSERT INTO materials VALUES(?,?,?,?,?,?)',('CN-CUSTOM-OLD','SV','BOTH',100,server.encrypt(custom),'old-import'))
 """
-            result=subprocess.run([sys.executable,'-c',init],env=env,cwd=server.ROOT,capture_output=True,text=True)
+            result=subprocess.run([sys.executable,'-c',init],env=env,cwd=server.ROOT,capture_output=True,text=True,encoding='utf-8')
             self.assertEqual(result.returncode,0,result.stderr)
             check="""import server,json
 with server.connect() as c:
  r=c.execute("SELECT secret FROM materials WHERE code='DA-01'").fetchone();d=server.decrypt(r['secret']);custom=server.decrypt(c.execute("SELECT secret FROM materials WHERE code='CN-CUSTOM-OLD'").fetchone()['secret']);print(json.dumps({'seed':d,'custom':custom},ensure_ascii=False))
 """
-            result=subprocess.run([sys.executable,'-c',check],env=env,cwd=server.ROOT,capture_output=True,text=True)
+            result=subprocess.run([sys.executable,'-c',check],env=env,cwd=server.ROOT,capture_output=True,text=True,encoding='utf-8')
             self.assertEqual(result.returncode,0,result.stderr);payload=json.loads(result.stdout);identity=payload['seed']
             self.assertEqual(payload['custom']['cn_name'],'自定义旧物料');self.assertEqual(payload['custom']['supplier'],'KEEP-CUSTOM')
             self.assertEqual(identity['cn_name'],'均苯四甲酸二酐');self.assertEqual(identity['supplier'],'KEEP-SUPPLIER')
